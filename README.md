@@ -1,7 +1,6 @@
 # github-notifications-cleaner
 
-<!-- [![PyPI](https://img.shields.io/pypi/v/github-notifications-cleaner.svg)](https://pypi.org/project/github-notifications-cleaner/) -->
-
+This cleans up notifications from merged PRs if they're closed, because dependabot is a noisy notification-spamming thing.
 
 ## Installation
 
@@ -11,7 +10,10 @@ Install this library using `pip`:
 
 ## Usage
 
-Usage instructions go here.
+Environment variables:
+
+- GITHUB_TOKEN - your auth token, which needs notification access
+- IGNORED_REPOS - a comma-delimited list of repositories to ignore, ie "yaleman/test,kanidm/kanidm" etc
 
 ## Development
 
@@ -20,3 +22,4 @@ To contribute to this library, first checkout the code. Then create a new virtua
     cd github-notifications-cleaner
     poetry install
     source venv/bin/activate
+

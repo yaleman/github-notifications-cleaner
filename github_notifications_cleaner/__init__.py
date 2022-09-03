@@ -92,5 +92,3 @@ def main() -> None:
             else:
                 logger.warning("Ooh we have a {}", notification.subject.type)
                 logger.warning(notification.subject.title)
-        else:
-            logger.debug("unread: {}", notification.unread)
