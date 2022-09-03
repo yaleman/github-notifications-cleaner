@@ -9,6 +9,6 @@ COPY github_notifications_cleaner github_notifications_cleaner
 ADD pyproject.toml .
 
 RUN python -m pip install .
-
+RUN rm -rf /usr/src/app
 #Run the command
 CMD [ "github-notifications-cleaner"]

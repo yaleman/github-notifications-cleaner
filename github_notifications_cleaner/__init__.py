@@ -55,7 +55,7 @@ def main() -> None:
     current_user = github.get_user()
 
     notifications = current_user.get_notifications()
-    logger.debug("{} notifications", notifications.totalCount)
+    logger.info("{} notifications", notifications.totalCount)
 
     for notification in notifications:
         if notification.repository.full_name.lower() in my_settings.ignored_repos:
