@@ -8,7 +8,7 @@ authors = [
 license = "MIT"
 
 [tool.poetry.scripts]
-github-notifications-cleaner = "github_notifications_cleaner.__main__:cli()"
+github-notifications-cleaner = "github_notifications_cleaner.__main__:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
