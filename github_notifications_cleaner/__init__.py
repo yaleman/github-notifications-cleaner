@@ -6,6 +6,7 @@ from typing import Any, List
 
 from loguru import logger
 from github import Github as GithubAPI
+from github.GithubException import UnknownObjectException
 from pydantic import BaseSettings, Field
 
 
@@ -75,7 +76,15 @@ def main() -> None:
 
         if notification.unread:
             if notification.subject.type == "PullRequest":
-                pull_request = notification.get_pull_request()
+                try:
+                    pull_request = notification.get_pull_request()
+                except UnknownObjectException as missing_pr:
+                    logger.error("Couldn't get PR: {} - error: {}", str(notification), missing_pr)
+                    continue
+
+                except Exception as generic_exception: #pylint: disable=broad-except
+                    logger.error("Couldn't get PR: {} - error: {}", str(notification), generic_exception)
+                    continue
                 if pull_request.state != "open":
                     logger.debug(
                         "type: {} state: {}",
@@ -90,5 +99,9 @@ def main() -> None:
                             notification.subject.title,
                         )
             else:
-                logger.warning("Ooh we have a {}", notification.subject.type)
-                logger.warning(notification.subject.title)
+                logger.warning(json.dumps({
+                    "message" : "unhandled type",
+                    "type" : notification.subject.type,
+                    "title": notification.subject.title,
+                    })
+                )
