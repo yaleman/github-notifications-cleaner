@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "github-notifications-cleaner"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 authors = [
     "James Hogkinson <james@terminaloutcomes.com>",
@@ -36,12 +36,3 @@ requires = [
     "poetry-core>=1.0.0",
 ]
 build-backend = "poetry.core.masonry.api"
-
-[project]
-name = "github-notifications-cleaner"
-description = ""
-license = "MIT"
-version = "0.0.1"
-authors = [
-    { name = "James Hogkinson", email = "james@terminaloutcomes.com" },
-]

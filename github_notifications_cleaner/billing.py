@@ -1,8 +1,13 @@
 """ playing with billing """
 
 import json
+import os
+import sys
 from typing import Any, Dict
+
 from github.AuthenticatedUser import AuthenticatedUser
+from loguru import logger
+
 from . import do_login, Settings
 
 
@@ -45,6 +50,8 @@ def get_billing_storage_for_user(user_object: AuthenticatedUser, username: str) 
 
     return data
 
+logger.remove()
+logger.add(sys.stdout, level=os.getenv("LOG_LEVEL", "INFO"))
 gh = do_login(Settings())
 user = gh.get_user()
 billing_data = get_billing_actions_for_user(user, "yaleman")
