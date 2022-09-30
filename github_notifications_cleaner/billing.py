@@ -5,6 +5,7 @@ import os
 import sys
 from typing import Any, Dict
 
+from github.GithubException import UnknownObjectException
 from github.AuthenticatedUser import AuthenticatedUser
 from loguru import logger
 
@@ -20,9 +21,9 @@ def get_billing_actions_for_user(user_object: AuthenticatedUser, username: str) 
     url = f"/users/{username}/settings/billing/actions"
 
     #pylint: disable=protected-access
-    data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
+    actions_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
 
-    return data
+    return actions_data
 
 def get_billing_packages_for_user(user_object: AuthenticatedUser, username: str) -> Dict[str, Any]:
     """
@@ -33,9 +34,9 @@ def get_billing_packages_for_user(user_object: AuthenticatedUser, username: str)
     url = f"/users/{username}/settings/billing/packages"
 
     #pylint: disable=protected-access
-    data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
+    packages_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
 
-    return data
+    return packages_data
 
 def get_billing_storage_for_user(user_object: AuthenticatedUser, username: str) -> Dict[str, Any]:
     """
@@ -46,17 +47,27 @@ def get_billing_storage_for_user(user_object: AuthenticatedUser, username: str) 
     url = f"/users/{username}/settings/billing/shared-storage"
 
     #pylint: disable=protected-access
-    data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
+    storage_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1] # type: ignore
 
-    return data
+    return storage_data
 
 logger.remove()
 logger.add(sys.stdout, level=os.getenv("LOG_LEVEL", "INFO"))
+
+if "GITHUB_USERNAME" not in os.environ:
+    logger.error("You need to specify a username or organisation in the GITHUB_USERNAME environment variable!")
+    sys.exit(1)
+target_object = os.environ["GITHUB_USERNAME"]
+
 gh = do_login(Settings())
 user = gh.get_user()
-billing_data = get_billing_actions_for_user(user, "yaleman")
-print(json.dumps(billing_data))
-billing_data = get_billing_packages_for_user(user, "yaleman")
-print(json.dumps(billing_data))
-billing_data = get_billing_storage_for_user(user, "yaleman")
-print(json.dumps(billing_data))
+for func in [
+    get_billing_actions_for_user,
+    get_billing_packages_for_user,
+    get_billing_storage_for_user,
+]:
+    try:
+        data = func(user, target_object)
+        print(json.dumps(data))
+    except UnknownObjectException as uoe:
+        logger.error("Couldn't get actions billing data - does the token have access?")
