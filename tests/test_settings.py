@@ -5,8 +5,20 @@ import pytest
 from github_notifications_cleaner import Settings
 
 
-def test_settings() -> None:
-    """ tests ... not much """
+def test_settings_token() -> None:
+    """tests ... not much"""
     if os.getenv("GITHUB_TOKEN") is None:
         with pytest.raises(ValueError):
             Settings()
+    else:
+        pytest.skip("GITHUB_TOKEN had a value")
+
+def test_settings_username() -> None:
+    """tests ... not much"""
+    if os.getenv("GITHUB_USERNAME") is None:
+        with pytest.raises(ValueError):
+            Settings()
+    else:
+        settings = Settings()
+        assert settings.github_username is not None
+        print(f"found username: {settings.github_username}")

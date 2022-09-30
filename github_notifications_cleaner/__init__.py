@@ -1,7 +1,7 @@
 """ trash code hiding in a trench coat """
 import os
 import json
-from typing import Any, List
+from typing import Any, List, Optional
 
 
 from loguru import logger
@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     """settings for this program"""
 
     github_token: str = Field(..., env="GITHUB_TOKEN")
+    github_username: Optional[str] = Field(None, env="GITHUB_USERNAME")
 
     ignored_repos: List[str] = Field([], env="IGNORED_REPOS")
 
@@ -79,11 +80,17 @@ def main() -> None:
                 try:
                     pull_request = notification.get_pull_request()
                 except UnknownObjectException as missing_pr:
-                    logger.error("Couldn't get PR: {} - error: {}", str(notification), missing_pr)
+                    logger.error(
+                        "Couldn't get PR: {} - error: {}", str(notification), missing_pr
+                    )
                     continue
 
-                except Exception as generic_exception: #pylint: disable=broad-except
-                    logger.error("Couldn't get PR: {} - error: {}", str(notification), generic_exception)
+                except Exception as generic_exception:  # pylint: disable=broad-except
+                    logger.error(
+                        "Couldn't get PR: {} - error: {}",
+                        str(notification),
+                        generic_exception,
+                    )
                     continue
                 if pull_request.state != "open":
                     logger.debug(
@@ -99,9 +106,12 @@ def main() -> None:
                             notification.subject.title,
                         )
             else:
-                logger.warning(json.dumps({
-                    "message" : "unhandled type",
-                    "type" : notification.subject.type,
-                    "title": notification.subject.title,
-                    })
+                logger.warning(
+                    json.dumps(
+                        {
+                            "message": "unhandled type",
+                            "type": notification.subject.type,
+                            "title": notification.subject.title,
+                        }
+                    )
                 )
