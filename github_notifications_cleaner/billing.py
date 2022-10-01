@@ -59,26 +59,31 @@ def get_billing_storage_for_user(
 
     return storage_data
 
+def cli() -> None:
+    """ dumps all your billing data """
+    logger.remove()
+    logger.add(sys.stdout, level=os.getenv("LOG_LEVEL", "INFO"))
 
-logger.remove()
-logger.add(sys.stdout, level=os.getenv("LOG_LEVEL", "INFO"))
+    settings = Settings()
+    if settings.github_username is None:
+        logger.error(
+            "You need to specify a username in the GITHUB_USERNAME environment variable!"
+        )
+        sys.exit(1)
 
-settings = Settings()
-if settings.github_username is None:
-    logger.error(
-        "You need to specify a username in the GITHUB_USERNAME environment variable!"
-    )
-    sys.exit(1)
+    github_client = do_login(Settings())
+    user = github_client.get_user()
+    for func in [
+        get_billing_actions_for_user,
+        get_billing_packages_for_user,
+        get_billing_storage_for_user,
+    ]:
+        try:
+            data = func(user, settings.github_username)
+            print(json.dumps(data))
+        except UnknownObjectException as uoe:
+            logger.error("Couldn't get actions billing data - does the token have access?")
+            logger.debug(uoe)
 
-gh = do_login(Settings())
-user = gh.get_user()
-for func in [
-    get_billing_actions_for_user,
-    get_billing_packages_for_user,
-    get_billing_storage_for_user,
-]:
-    try:
-        data = func(user, settings.github_username)
-        print(json.dumps(data))
-    except UnknownObjectException as uoe:
-        logger.error("Couldn't get actions billing data - does the token have access?")
+if __name__ == '__main__':
+    cli()

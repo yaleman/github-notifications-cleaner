@@ -16,8 +16,7 @@ def test_settings_token() -> None:
 def test_settings_username() -> None:
     """tests ... not much"""
     if os.getenv("GITHUB_USERNAME") is None:
-        with pytest.raises(ValueError):
-            Settings()
+        Settings().github_username is None
     else:
         settings = Settings()
         assert settings.github_username is not None
