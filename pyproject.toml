@@ -24,13 +24,18 @@ extras = [
 version = "^1.10.6"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.17.0"
-mypy = "^1.0"
+mypy = "^1.1"
 pytest = "^7.2.2"
 black = "^23.1.0"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.254"
+
 [tool.pylint.MASTER]
 max-line-length = 200
+
+[tool.ruff]
+line-length = 200
 
 [build-system]
 requires = [
