@@ -37,6 +37,9 @@ max-line-length = 200
 [tool.ruff]
 line-length = 200
 
+[tool.mypy]
+plugins = "pydantic.mypy"
+
 [build-system]
 requires = [
     "poetry-core>=1.0.0",
