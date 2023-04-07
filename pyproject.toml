@@ -24,7 +24,7 @@ extras = [
 version = "^1.10.7"
 
 [tool.poetry.dev-dependencies]
-mypy = "^1.1"
+mypy = "^1.2"
 pytest = "^7.2.2"
 black = "^23.3.0"
 
