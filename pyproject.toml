@@ -21,7 +21,7 @@ loguru = "^0.7.0"
 extras = [
     "dotenv",
 ]
-version = "^1.10.9"
+version = "^1.10.10"
 
 [tool.poetry.dev-dependencies]
 mypy = "^1.4"
