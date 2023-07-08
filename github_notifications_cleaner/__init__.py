@@ -7,31 +7,29 @@ from typing import Any, List, Optional
 from loguru import logger
 from github import Github as GithubAPI
 from github.GithubException import UnknownObjectException
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # pylint: disable=too-few-public-methods
 class Settings(BaseSettings):
     """settings for this program"""
 
-    github_token: str = Field(..., env="GITHUB_TOKEN")
-    github_username: Optional[str] = Field(None, env="GITHUB_USERNAME")
+    github_token: str = Field(..., validation_alias="GITHUB_TOKEN")
+    github_username: Optional[str] = Field(None, validation_alias="GITHUB_USERNAME")
 
-    ignored_repos: List[str] = Field([], env="IGNORED_REPOS")
+    ignored_repos: List[str] = Field([], validation_alias="IGNORED_REPOS")
 
-    class Config:
-        """config subclass"""
+    # TODO[pydantic]: We couldn't refactor this class, please create the `model_config` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-        # enable .env file support
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
-        @classmethod
-        def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
-            """figures out the multi-env-var thing"""
-            if field_name == "ignored_repos":
-                return [x.lower() for x in raw_val.split(",")]
-            return json.loads(raw_val)
+    @classmethod
+    def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
+        """figures out the multi-env-var thing"""
+        if field_name == "ignored_repos":
+            return [x.lower() for x in raw_val.split(",")]
+        return json.loads(raw_val)
 
 
 def do_login(settings: Settings) -> GithubAPI:
@@ -105,6 +103,9 @@ def main() -> None:
                             notification.repository.full_name,
                             notification.subject.title,
                         )
+            elif notification.subject.type == "CheckSuite":
+                logger.debug("Ignoring CheckSuite Status: {}", notification.raw_data)
+
             else:
                 logger.warning(
                     json.dumps(

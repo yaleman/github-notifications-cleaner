@@ -5,7 +5,7 @@ import sys
 import click
 from loguru import logger
 
-from . import main
+from github_notifications_cleaner import main
 
 
 @click.command()

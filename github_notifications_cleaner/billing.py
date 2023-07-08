@@ -23,7 +23,7 @@ def get_billing_actions_for_user(
     url = f"/users/{username}/settings/billing/actions"
 
     # pylint: disable=protected-access
-    actions_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]  # type: ignore
+    actions_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
 
     return actions_data
 
@@ -39,7 +39,7 @@ def get_billing_packages_for_user(
     url = f"/users/{username}/settings/billing/packages"
 
     # pylint: disable=protected-access
-    packages_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]  # type: ignore
+    packages_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
 
     return packages_data
 
@@ -55,7 +55,7 @@ def get_billing_storage_for_user(
     url = f"/users/{username}/settings/billing/shared-storage"
 
     # pylint: disable=protected-access
-    storage_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]  # type: ignore
+    storage_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
 
     return storage_data
 

@@ -15,9 +15,6 @@ def test_settings_token() -> None:
     else:
         pytest.skip("GITHUB_TOKEN had a value")
 
-
-
-
 @mock.patch.dict(os.environ, {"GITHUB_TOKEN": "lulz"})
 def test_settings_username() -> None:
     """tests ... not much"""
