@@ -1,8 +1,7 @@
 """ trash code hiding in a trench coat """
 import os
-import json
+import sys
 from typing import Any, List, Optional
-
 
 from loguru import logger
 from github import Github as GithubAPI
@@ -18,18 +17,17 @@ class Settings(BaseSettings):
     github_token: str = Field(..., validation_alias="GITHUB_TOKEN")
     github_username: Optional[str] = Field(None, validation_alias="GITHUB_USERNAME")
 
-    ignored_repos: List[str] = Field([], validation_alias="IGNORED_REPOS")
+    ignored_repos: str = Field(
+        default="",
+        validation_alias="IGNORED_REPOS",
+        help="comma separated list of repos to ignore",
+    )
 
-    # TODO[pydantic]: We couldn't refactor this class, please create the `model_config` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    @classmethod
-    def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
-        """figures out the multi-env-var thing"""
-        if field_name == "ignored_repos":
-            return [x.lower() for x in raw_val.split(",")]
-        return json.loads(raw_val)
+    def ignored_repos_split(self) -> List[str]:
+        """split the ignored repos becuase pydantic was being a jerk"""
+        return self.ignored_repos.split(",")
 
 
 def do_login(settings: Settings) -> GithubAPI:
@@ -42,23 +40,42 @@ def do_login(settings: Settings) -> GithubAPI:
     raise ValueError("No authentication method was found!")
 
 
+def setup_logging() -> None:
+    """does what it says on the tin"""
+
+    if not sys.stdout.isatty():
+
+        def formatter(_record: Any) -> str:
+            """this function returns the string to be formatted, not the actual message to be logged"""
+            return "{message}"
+
+        logger.remove()
+        logger.add(sys.stdout, level="INFO", serialize=True, format=formatter)
+
+
 def main() -> None:
     """look, I can't be held responsible for all my code."""
+
+    setup_logging()
 
     my_settings = Settings()
 
     try:
         github = do_login(my_settings)
     except ValueError as value_error:
-        logger.error("{}", value_error)
+        logger.error(value_error)
         return
+
     current_user = github.get_user()
 
     notifications = current_user.get_notifications()
-    logger.info("{} notifications", notifications.totalCount)
+    logger.info({"notifications": notifications.totalCount})
 
     for notification in notifications:
-        if notification.repository.full_name.lower() in my_settings.ignored_repos:
+        if (
+            notification.repository.full_name.lower()
+            in my_settings.ignored_repos_split()
+        ):
             logger.debug(
                 "Skipping ignored repo: {} {} - {}",
                 notification.id,
@@ -92,9 +109,10 @@ def main() -> None:
                     continue
                 if pull_request.state != "open":
                     logger.debug(
-                        "type: {} state: {}",
-                        notification.subject.type,
-                        pull_request.state,
+                        {
+                            "type": notification.subject.type,
+                            "state": pull_request.state,
+                        }
                     )
                     if pull_request.state == "closed":
                         notification.mark_as_read()
@@ -108,11 +126,9 @@ def main() -> None:
 
             else:
                 logger.warning(
-                    json.dumps(
-                        {
-                            "message": "unhandled type",
-                            "type": notification.subject.type,
-                            "title": notification.subject.title,
-                        }
-                    )
+                    {
+                        "message": "unhandled type",
+                        "type": notification.subject.type,
+                        "title": notification.subject.title,
+                    }
                 )
