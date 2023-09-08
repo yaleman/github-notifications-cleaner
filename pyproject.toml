@@ -15,7 +15,7 @@ github-billing-user = "github_notifications_cleaner.billing:cli"
 python = "^3.9"
 PyGithub = "^1.59"
 click = "^8.1.7"
-loguru = "^0.7.0"
+loguru = "^0.7.1"
 pydantic-settings = "^2.0.3"
 
 [tool.poetry.dependencies.pydantic]
