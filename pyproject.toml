@@ -30,7 +30,7 @@ pytest = "^7.4.3"
 black = "^23.12.1"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.1.9"
+ruff = "^0.1.11"
 types-click = "^7.1.8"
 
 [tool.pylint.MASTER]
