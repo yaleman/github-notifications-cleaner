@@ -13,7 +13,7 @@ github-billing-user = "github_notifications_cleaner.billing:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-PyGithub = "^2.2"
+PyGithub = "^2.3"
 click = "^8.1.7"
 loguru = "^0.7.2"
 pydantic-settings = "^2.2.1"
