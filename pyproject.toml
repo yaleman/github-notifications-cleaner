@@ -16,7 +16,7 @@ python = "^3.9"
 PyGithub = "^2.6"
 click = "^8.1.8"
 loguru = "^0.7.3"
-pydantic-settings = "^2.7.1"
+pydantic-settings = "^2.8.0"
 
 [tool.poetry.dependencies.pydantic]
 extras = [
