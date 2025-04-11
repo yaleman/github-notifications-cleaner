@@ -22,7 +22,7 @@ pydantic-settings = "^2.8.1"
 extras = [
     "dotenv",
 ]
-version = "^2.11.2"
+version = "^2.11.3"
 
 [tool.poetry.dev-dependencies]
 mypy = "^1.15"
