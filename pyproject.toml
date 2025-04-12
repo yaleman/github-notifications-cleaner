@@ -7,11 +7,11 @@ dependencies = [
     "PyGithub<3.0,>=2.6",
     "click<9.0.0,>=8.1.8",
     "loguru<1.0.0,>=0.7.3",
+    "pydantic>=2.11.3",
     "pydantic-settings<3.0.0,>=2.8.1",
-    "pydantic[dotenv]<3.0.0,>=2.11.3",
 ]
 name = "github-notifications-cleaner"
-version = "0.2.2"
+version = "0.3.0"
 description = ""
 
 [project.scripts]
@@ -19,7 +19,7 @@ github-notifications-cleaner = "github_notifications_cleaner.__main__:cli"
 github-billing-user = "github_notifications_cleaner.billing:cli"
 
 [dependency-groups]
-dev = ["ruff<1.0.0,>=0.11.5", "types-click<8.0.0,>=7.1.8"]
+dev = ["pytest>=8.3.5", "ruff<1.0.0,>=0.11.5", "types-click<8.0.0,>=7.1.8"]
 
 
 [tool.pylint.MASTER]
@@ -32,5 +32,5 @@ line-length = 200
 plugins = "pydantic.mypy"
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

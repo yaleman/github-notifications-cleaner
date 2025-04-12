@@ -1,10 +1,12 @@
-""" trash code hiding in a trench coat """
+"""trash code hiding in a trench coat"""
+
 import os
 import sys
 from typing import Any, List, Optional
 
 from loguru import logger
 from github import Github as GithubAPI
+from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import UnknownObjectException
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -20,7 +22,7 @@ class Settings(BaseSettings):
     ignored_repos: str = Field(
         default="",
         validation_alias="IGNORED_REPOS",
-        help="comma separated list of repos to ignore",
+        description="comma separated list of repos to ignore",
     )
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
@@ -68,14 +70,15 @@ def main() -> None:
 
     current_user = github.get_user()
 
+    if not isinstance(current_user, AuthenticatedUser):
+        logger.error("Not an authenticated user, quitting!")
+        sys.exit(1)
+
     notifications = current_user.get_notifications()
     logger.info({"notifications": notifications.totalCount})
 
     for notification in notifications:
-        if (
-            notification.repository.full_name.lower()
-            in my_settings.ignored_repos_split()
-        ):
+        if notification.repository.full_name.lower() in my_settings.ignored_repos_split():
             logger.debug(
                 "Skipping ignored repo: {} {} - {}",
                 notification.id,
@@ -95,9 +98,7 @@ def main() -> None:
                 try:
                     pull_request = notification.get_pull_request()
                 except UnknownObjectException as missing_pr:
-                    logger.error(
-                        "Couldn't get PR: {} - error: {}", str(notification), missing_pr
-                    )
+                    logger.error("Couldn't get PR: {} - error: {}", str(notification), missing_pr)
                     continue
 
                 except Exception as generic_exception:  # pylint: disable=broad-except

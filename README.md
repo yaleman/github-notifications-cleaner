@@ -6,7 +6,7 @@ This cleans up notifications from merged PRs if they're closed, because dependab
 
 Install this library using `pip`:
 
-    $ python -m pip install git+https://github.com/yaleman/github-notifications-cleaner
+    python -m pip install git+https://github.com/yaleman/github-notifications-cleaner
 
 ## Usage
 
@@ -20,6 +20,5 @@ Environment variables:
 To contribute to this library, first checkout the code. Then create a new virtual environment:
 
     cd github-notifications-cleaner
-    poetry install
-    source venv/bin/activate
-
+    uv venv
+    source .venv/bin/activate

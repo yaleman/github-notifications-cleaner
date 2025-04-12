@@ -1,4 +1,4 @@
-""" playing with billing """
+"""playing with billing"""
 
 import json
 import os
@@ -12,9 +12,7 @@ from loguru import logger
 from . import do_login, Settings
 
 
-def get_billing_actions_for_user(
-    user_object: AuthenticatedUser, username: str
-) -> Dict[str, Any]:
+def get_billing_actions_for_user(user_object: AuthenticatedUser, username: str) -> Dict[str, Any]:
     """
     :calls: `GET /users/{username}/settings/billing/actions <https://docs.github.com/en/rest/billing#get-github-actions-billing-for-a-user>`_
     :rtype: Dict
@@ -28,9 +26,7 @@ def get_billing_actions_for_user(
     return actions_data
 
 
-def get_billing_packages_for_user(
-    user_object: AuthenticatedUser, username: str
-) -> Dict[str, Any]:
+def get_billing_packages_for_user(user_object: AuthenticatedUser, username: str) -> Dict[str, Any]:
     """
     :calls: `GET /users/{username}/settings/billing/packages <https://docs.github.com/en/rest/billing#get-github-actions-billing-for-a-user>`_
     :rtype: Dict
@@ -44,9 +40,7 @@ def get_billing_packages_for_user(
     return packages_data
 
 
-def get_billing_storage_for_user(
-    user_object: AuthenticatedUser, username: str
-) -> Dict[str, Any]:
+def get_billing_storage_for_user(user_object: AuthenticatedUser, username: str) -> Dict[str, Any]:
     """
     :calls: `GET /users/{username}/settings/billing/shared-storage <https://docs.github.com/en/rest/billing#get-github-actions-billing-for-a-user>`_
     :rtype: Dict
@@ -59,20 +53,24 @@ def get_billing_storage_for_user(
 
     return storage_data
 
+
 def cli() -> None:
-    """ dumps all your billing data """
+    """dumps all your billing data"""
     logger.remove()
     logger.add(sys.stdout, level=os.getenv("LOG_LEVEL", "INFO"))
 
     settings = Settings()
     if settings.github_username is None:
-        logger.error(
-            "You need to specify a username in the GITHUB_USERNAME environment variable!"
-        )
+        logger.error("You need to specify a username in the GITHUB_USERNAME environment variable!")
         sys.exit(1)
 
     github_client = do_login(Settings())
     user = github_client.get_user()
+    if isinstance(user, AuthenticatedUser):
+        logger.debug("Authenticated user: {}", user.login)
+    else:
+        logger.error("Not an authenticated user, quitting!")
+        sys.exit(1)
     for func in [
         get_billing_actions_for_user,
         get_billing_packages_for_user,
@@ -85,5 +83,6 @@ def cli() -> None:
             logger.error("Couldn't get actions billing data - does the token have access?")
             logger.debug(uoe)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     cli()
