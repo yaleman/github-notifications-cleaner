@@ -19,7 +19,12 @@ github-notifications-cleaner = "github_notifications_cleaner.__main__:cli"
 github-billing-user = "github_notifications_cleaner.billing:cli"
 
 [dependency-groups]
-dev = ["pytest>=8.3.5", "ruff<1.0.0,>=0.11.5", "types-click<8.0.0,>=7.1.8"]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "ruff>=0.11.5,<1.0.0",
+    "types-click<8.0.0,>=7.1.8",
+]
 
 
 [tool.pylint.MASTER]
