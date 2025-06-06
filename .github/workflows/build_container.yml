@@ -1,5 +1,6 @@
+---
 name: 'Build container'
-on:
+"on":
   push:
     branches:
      - "main"
