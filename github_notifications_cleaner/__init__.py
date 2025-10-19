@@ -6,13 +6,13 @@ from typing import Any, List, Optional
 
 from loguru import logger
 from github import Github as GithubAPI
+from github.Auth import Token
 from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import UnknownObjectException
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-# pylint: disable=too-few-public-methods
 class Settings(BaseSettings):
     """settings for this program"""
 
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     github_username: Optional[str] = Field(None, validation_alias="GITHUB_USERNAME")
 
     ignored_repos: str = Field(
-        default="",
+        "",
         validation_alias="IGNORED_REPOS",
         description="comma separated list of repos to ignore",
     )
@@ -37,7 +37,7 @@ def do_login(settings: Settings) -> GithubAPI:
 
     if settings.github_token:
         logger.debug("Using GITHUB_TOKEN environment variable for login.")
-        github: GithubAPI = GithubAPI(os.getenv("GITHUB_TOKEN"))
+        github: GithubAPI = GithubAPI(auth=Token(os.getenv("GITHUB_TOKEN")))
         return github
     raise ValueError("No authentication method was found!")
 
@@ -101,7 +101,7 @@ def main() -> None:
                     logger.error("Couldn't get PR: {} - error: {}", str(notification), missing_pr)
                     continue
 
-                except Exception as generic_exception:  # pylint: disable=broad-except
+                except Exception as generic_exception:
                     logger.error(
                         "Couldn't get PR: {} - error: {}",
                         str(notification),

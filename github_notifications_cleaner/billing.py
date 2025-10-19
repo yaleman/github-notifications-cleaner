@@ -18,10 +18,9 @@ def get_billing_actions_for_user(user_object: AuthenticatedUser, username: str) 
     :rtype: Dict
     """
     assert isinstance(username, str), username
-    url = f"/users/{username}/settings/billing/actions"
+    url = f"/users/{username}/settings/billing/usage"
 
-    # pylint: disable=protected-access
-    actions_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
+    actions_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url, headers={"X-GitHub-Api-Version": "2022-11-28"})[1]
 
     return actions_data
 
@@ -34,7 +33,6 @@ def get_billing_packages_for_user(user_object: AuthenticatedUser, username: str)
     assert isinstance(username, str), username
     url = f"/users/{username}/settings/billing/packages"
 
-    # pylint: disable=protected-access
     packages_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
 
     return packages_data
@@ -48,7 +46,6 @@ def get_billing_storage_for_user(user_object: AuthenticatedUser, username: str) 
     assert isinstance(username, str), username
     url = f"/users/{username}/settings/billing/shared-storage"
 
-    # pylint: disable=protected-access
     storage_data: Dict[str, Any] = user_object._requester.requestJsonAndCheck("GET", url)[1]
 
     return storage_data
