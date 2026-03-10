@@ -1,7 +1,7 @@
-
 [project]
-authors = [{ name = "James Hogkinson", email = "james@terminaloutcomes.com" }]
-license = { text = "MIT" }
+authors = [
+    { name = "James Hogkinson", email = "james@terminaloutcomes.com" },
+]
 requires-python = "<4.0,>=3.12"
 dependencies = [
     "PyGithub<3.0,>=2.6",
@@ -13,6 +13,10 @@ dependencies = [
 name = "github-notifications-cleaner"
 version = "0.3.0"
 description = ""
+readme = "README.md"
+
+[project.license]
+text = "MIT"
 
 [project.scripts]
 github-notifications-cleaner = "github_notifications_cleaner.__main__:cli"
@@ -26,7 +30,6 @@ dev = [
     "types-click<8.0.0,>=7.1.8",
 ]
 
-
 [tool.pylint.MASTER]
 max-line-length = 200
 
@@ -37,5 +40,7 @@ line-length = 200
 plugins = "pydantic.mypy"
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
