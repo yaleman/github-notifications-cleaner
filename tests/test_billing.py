@@ -25,6 +25,7 @@ def get_user() -> AuthenticatedUser:
     return user
 
 
-def test_get_billing_actions_for_user(user: AuthenticatedUser) -> None:
-    """test get_billing_actions_for_user"""
-    get_billing_actions_for_user(user, "octocat")
+# def test_get_billing_actions_for_user(user: AuthenticatedUser) -> None:
+#     """test get_billing_actions_for_user, only works if you have access to the 'enhanced billing platform'"""
+#     print("Checking billing actions for user: {}".format(user.login))
+#     get_billing_actions_for_user(user, user.login)
