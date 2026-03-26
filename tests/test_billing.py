@@ -1,5 +1,7 @@
 """tests"""
 
+from github.NamedUser import NamedUser
+
 import pytest
 import sys
 
@@ -18,7 +20,8 @@ def get_user() -> AuthenticatedUser:
         sys.exit(1)
 
     github_client = do_login(Settings())
-    user: AuthenticatedUser = github_client.get_user()
+    user: AuthenticatedUser | NamedUser = github_client.get_user()
+    assert isinstance(user, AuthenticatedUser)
     return user
 
 
