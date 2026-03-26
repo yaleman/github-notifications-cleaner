@@ -37,7 +37,7 @@ def do_login(settings: Settings) -> GithubAPI:
 
     if settings.github_token:
         logger.debug("Using GITHUB_TOKEN environment variable for login.")
-        github: GithubAPI = GithubAPI(auth=Token(os.getenv("GITHUB_TOKEN")))
+        github: GithubAPI = GithubAPI(auth=Token(os.getenv("GITHUB_TOKEN", "")))
         return github
     raise ValueError("No authentication method was found!")
 
